@@ -3,14 +3,8 @@ from django.db import models
 
 # custom User Model
 class User(AbstractUser):
-    username = models.CharField(
-        max_length=150,
-        unique=True,
-        null=False,
-    )
-    is_rancher=models.BooleanField()
+    is_rancher=models.BooleanField(default=False)
 
-    USERNAME_FIELD="username"
-    REQUIRED_FIELDS = ["is_rancher"]
+    REQUIRED_FIELDS = []
 
 
