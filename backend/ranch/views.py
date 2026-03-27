@@ -6,7 +6,8 @@ from .serializers import RanchSerializer
 
 # Create your views here.
 
-class RanchListView(generics.ListAPIView):
+class RanchListCreateView(generics.ListCreateAPIView):
     queryset = Ranch.objects.all()
     serializer_class = RanchSerializer
     permission_classes = [AllowAny]
+

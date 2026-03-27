@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import RanchListView
+from .views import RanchListCreateView
 
 urlpatterns=[
-    path('ranches/', RanchListView.as_view(), name='ranch-list'),
+    path('ranches/', RanchListCreateView.as_view(), name='ranch-list-create'),
 ]
