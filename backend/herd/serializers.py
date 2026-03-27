@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Herd, Animal
+from .models import Herd, Animal, TreatmentEvent, TreatmentItem
 
 class HerdSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,4 +18,23 @@ class AnimalSerializer(serializers.ModelSerializer):
         "brand", "notes",
         "created_at",
         "updated_at"
+        ]
+
+class TreatmentEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TreatmentEvent
+        fields = ["id", "animal",
+        "treated_on", "notes",
+        "created_at", "updated_at"
+        ]
+
+class TreatmentItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TreatmentItem
+        fields=["id", "treatment_event",
+        "product_name", "serial_number",
+        "lot_number", "expires_on",
+        "dosage", "method",
+        "injection_site", "notes",
+        "created_at", "updated_at"
         ]
