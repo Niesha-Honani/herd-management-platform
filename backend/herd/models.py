@@ -34,6 +34,9 @@ class Herd(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.rancher}"
+
 class Animal(models.Model):
     class CowSex(models.TextChoices):
         female = "female"
@@ -69,12 +72,22 @@ class Animal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        if self.hcp_tag:
+            return self.hcp_tag
+        elif self.owner_tag:
+                return self.owner_tag
+        return f"Animal {self.id}" 
+
 class TreatmentEvent(models.Model):
     animal=models.ForeignKey(Animal, on_delete=models.CASCADE,related_name="treatment_events")
     treated_on=models.DateField(blank=False)
     notes=models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.animal} - {self.treated_on}"
 
 class TreatmentItem(models.Model):
     class TreatmentMethod(models.TextChoices):
@@ -99,3 +112,6 @@ class TreatmentItem(models.Model):
     notes=models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.product_name} - {self.treatment_event.treated_on}"

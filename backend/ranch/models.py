@@ -36,6 +36,9 @@ class Ranch(models.Model):
 
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.city}"
+
 ## Grazing Area w/in Ranch area
 class GrazingArea(models.Model):
     ranch = models.ForeignKey(Ranch, on_delete=models.CASCADE, related_name='grazing_areas')
@@ -54,3 +57,6 @@ class GrazingArea(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.name} ({self.ranch.name})"
