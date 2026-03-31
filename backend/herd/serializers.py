@@ -39,12 +39,23 @@ class TreatmentEventSerializer(serializers.ModelSerializer):
         "treated_on", "notes",
         "created_at", "updated_at",
         ]
+
+class TreatmentEventSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TreatmentEvent
+        fields = ["id", "treated_on",
+        "animal"
+        ]
+
     
 
 class TreatmentItemSerializer(serializers.ModelSerializer):
+    treatment_event_detail = TreatmentEventSummarySerializer(source="treatment_event", read_only = True)
+
     class Meta:
         model=TreatmentItem
         fields=["id", "treatment_event",
+        "treatment_event",
         "product_name", "serial_number",
         "lot_number", "expires_on",
         "dosage", "method",
