@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from .models import Herd, Animal, TreatmentEvent, TreatmentItem
 from .serializers import HerdSerializer, AnimalSerializer, TreatmentEventSerializer, TreatmentItemSerializer
 
-class HerdListView(generics.ListAPIView):
+class HerdListCreateView(generics.ListCreateAPIView):
     queryset = Herd.objects.all()
     serializer_class = HerdSerializer
     permission_classes = [AllowAny]

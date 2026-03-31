@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import HerdListView, AnimalListView, TreatmentEventListView, TreatmentItemListView
+from .views import HerdListCreateView, AnimalListView, TreatmentEventListView, TreatmentItemListView
 
 urlpatterns=[
     path('herds/',
-    HerdListView.as_view(),
-    name='herd-list'),
+    HerdListCreateView.as_view(),
+    name='herd-list-create'),
 
     path('animals/',
     AnimalListView.as_view(),
