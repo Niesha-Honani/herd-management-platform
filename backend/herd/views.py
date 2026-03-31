@@ -9,17 +9,17 @@ class HerdListCreateView(generics.ListCreateAPIView):
     serializer_class = HerdSerializer
     permission_classes = [AllowAny]
 
-class AnimalListView(generics.ListAPIView):
+class AnimalListCreateView(generics.ListCreateAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
     permission_classes = [AllowAny]
 
-class TreatmentEventListView(generics.ListAPIView):
+class TreatmentEventListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentEvent.objects.all()
     serializer_class = TreatmentEventSerializer
     permission_classes = [AllowAny]
 
-class TreatmentItemListView(generics.ListAPIView):
+class TreatmentItemListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentItem.objects.all()
     serializer_class = TreatmentItemSerializer
     permission_classes = [AllowAny] 

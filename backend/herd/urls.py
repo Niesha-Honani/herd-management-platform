@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HerdListCreateView, AnimalListView, TreatmentEventListView, TreatmentItemListView
+from .views import HerdListCreateView, AnimalListCreateView, TreatmentEventListCreateView, TreatmentItemListCreateView
 
 urlpatterns=[
     path('herds/',
@@ -7,12 +7,12 @@ urlpatterns=[
     name='herd-list-create'),
 
     path('animals/',
-    AnimalListView.as_view(),
-    name='animal-list'),
+    AnimalListCreateView.as_view(),
+    name='animal-list-create'),
 
-   path('treatment-events/', TreatmentEventListView.as_view(),
-   name='treatment-list'),
+   path('treatment-events/', TreatmentEventListCreateView.as_view(),
+   name='treatment-event-list-create'),
 
-   path('treatment-items/', TreatmentItemListView.as_view(),
-   name='treatment-item-list'), 
+   path('treatment-items/', TreatmentItemListCreateView.as_view(),
+   name='treatment-item-list-create'), 
 ]
