@@ -20,13 +20,26 @@ class AnimalSerializer(serializers.ModelSerializer):
         "updated_at"
         ]
 
+class AnimalSummarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Animal
+        fields = [
+            "id", "hcp_tag",
+            "owner_tag", "animal_class",
+            "status"
+        ]
+
 class TreatmentEventSerializer(serializers.ModelSerializer):
+    animal_detail = AnimalSummarySerializer(source="animal", read_only=True)
+
     class Meta:
         model = TreatmentEvent
         fields = ["id", "animal",
+        "animal_detail",
         "treated_on", "notes",
-        "created_at", "updated_at"
+        "created_at", "updated_at",
         ]
+    
 
 class TreatmentItemSerializer(serializers.ModelSerializer):
     class Meta:

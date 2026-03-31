@@ -14,12 +14,33 @@ class AnimalListCreateView(generics.ListCreateAPIView):
     serializer_class = AnimalSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        queryset = Animal.objects.all()
+        herd_id = self.request.query_params.get("herd")
+        if herd_id:
+            queryset = queryset.filter(herd=herd_id)
+        return queryset
+
 class TreatmentEventListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentEvent.objects.all()
     serializer_class = TreatmentEventSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        queryset = TreatmentEvent.objects.all()
+        animal_id = self.request.query_params.get("animal")
+        if animal_id:
+            queryset = queryset.filter(animal=animal_id)
+        return queryset
+
 class TreatmentItemListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentItem.objects.all()
     serializer_class = TreatmentItemSerializer
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        queryset = TreatmentItem.objects.all()
+        treatment_event_id = self.request.query_params.get("treatment_event")
+        if treatment_event_id:
+            queryset = queryset.filter(treatment_event=treatment_event_id)
+        return queryset
