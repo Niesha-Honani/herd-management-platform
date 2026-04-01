@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Herd, Animal, TreatmentEvent, TreatmentItem
 from .serializers import HerdSerializer, AnimalSerializer, TreatmentEventSerializer, TreatmentItemSerializer
@@ -25,9 +25,6 @@ class AnimalListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(herd=herd_id)
         return queryset
     
-    def perform_create(self, serializer):
-        serializer.save(rancher=self.request.user)
-
 class TreatmentEventListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentEvent.objects.all()
     serializer_class = TreatmentEventSerializer
@@ -40,13 +37,10 @@ class TreatmentEventListCreateView(generics.ListCreateAPIView):
             queryset = queryset.filter(animal=animal_id)
         return queryset
 
-    def perform_create(self, serializer):
-        serializer.save(rancher=self.request.user)
-
 class TreatmentItemListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentItem.objects.all()
     serializer_class = TreatmentItemSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = TreatmentItem.objects.all()
@@ -54,6 +48,3 @@ class TreatmentItemListCreateView(generics.ListCreateAPIView):
         if treatment_event_id:
             queryset = queryset.filter(treatment_event=treatment_event_id)
         return queryset
-
-    def perform_create(self, serializer):
-        serializer.save(rancher=self.request.user)

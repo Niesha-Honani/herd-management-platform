@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Herd, Animal, TreatmentEvent, TreatmentItem, Ranch
+from .models import Herd, Animal, TreatmentEvent, TreatmentItem
+from ranch.models import Ranch
 from datetime import date
 
 class RanchSummarySerializer(serializers.ModelSerializer):
@@ -42,7 +43,7 @@ class AnimalSerializer(serializers.ModelSerializer):
         "updated_at"
         ]
         read_only_fields = [
-            "herd","created_at","updated_at"
+            "created_at","updated_at"
         ]
 
 class AnimalSummarySerializer(serializers.ModelSerializer):
@@ -64,7 +65,7 @@ class TreatmentEventSerializer(serializers.ModelSerializer):
         "treated_on", "notes",
         "created_at", "updated_at",
         ]
-    read_only_fields=["animal", "created_at", "updated_at"]
+        read_only_fields=["created_at", "updated_at"]
     
     def validate_treated_on(self, value):
         if value > date.today():
@@ -93,7 +94,6 @@ class TreatmentItemSerializer(serializers.ModelSerializer):
         "created_at", "updated_at"
         ]
         read_only_fields = [
-            "treatment_event",
             "created_at", "updated_at"
         ]
 
