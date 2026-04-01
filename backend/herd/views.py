@@ -9,6 +9,7 @@ class HerdListCreateView(generics.ListCreateAPIView):
     serializer_class = HerdSerializer
     permission_classes = [AllowAny]
 
+
 class AnimalListCreateView(generics.ListCreateAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
