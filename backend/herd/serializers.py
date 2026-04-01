@@ -16,6 +16,7 @@ class HerdSerializer(serializers.ModelSerializer):
         model = Herd
         fields=["id", "rancher",
         "ranch", "ranch_detail", "name", "description", "reported_headcount", "notes", "created_at", "updated_at"]
+        read_only_fields = ["rancher", "created_at", "updated_at"]
 
 class HerdSummarySerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,6 +41,9 @@ class AnimalSerializer(serializers.ModelSerializer):
         "created_at",
         "updated_at"
         ]
+        read_only_fields = [
+            "herd","created_at","updated_at"
+        ]
 
 class AnimalSummarySerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,6 +64,7 @@ class TreatmentEventSerializer(serializers.ModelSerializer):
         "treated_on", "notes",
         "created_at", "updated_at",
         ]
+    read_only_fields=["animal", "created_at", "updated_at"]
     
     def validate_treated_on(self, value):
         if value > date.today():
@@ -86,6 +91,10 @@ class TreatmentItemSerializer(serializers.ModelSerializer):
         "dosage", "method",
         "injection_site", "notes",
         "created_at", "updated_at"
+        ]
+        read_only_fields = [
+            "treatment_event",
+            "created_at", "updated_at"
         ]
 
     def validate_expires_on(self, value):

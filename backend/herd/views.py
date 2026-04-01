@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Herd, Animal, TreatmentEvent, TreatmentItem
 from .serializers import HerdSerializer, AnimalSerializer, TreatmentEventSerializer, TreatmentItemSerializer
@@ -7,13 +7,16 @@ from .serializers import HerdSerializer, AnimalSerializer, TreatmentEventSeriali
 class HerdListCreateView(generics.ListCreateAPIView):
     queryset = Herd.objects.all()
     serializer_class = HerdSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(rancher=self.request.user)
 
 
 class AnimalListCreateView(generics.ListCreateAPIView):
     queryset = Animal.objects.all()
     serializer_class = AnimalSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Animal.objects.all()
@@ -21,11 +24,14 @@ class AnimalListCreateView(generics.ListCreateAPIView):
         if herd_id:
             queryset = queryset.filter(herd=herd_id)
         return queryset
+    
+    def perform_create(self, serializer):
+        serializer.save(rancher=self.request.user)
 
 class TreatmentEventListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentEvent.objects.all()
     serializer_class = TreatmentEventSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = TreatmentEvent.objects.all()
@@ -33,6 +39,9 @@ class TreatmentEventListCreateView(generics.ListCreateAPIView):
         if animal_id:
             queryset = queryset.filter(animal=animal_id)
         return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(rancher=self.request.user)
 
 class TreatmentItemListCreateView(generics.ListCreateAPIView):
     queryset = TreatmentItem.objects.all()
@@ -45,3 +54,6 @@ class TreatmentItemListCreateView(generics.ListCreateAPIView):
         if treatment_event_id:
             queryset = queryset.filter(treatment_event=treatment_event_id)
         return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(rancher=self.request.user)
