@@ -46,6 +46,16 @@ class AnimalSerializer(serializers.ModelSerializer):
             "created_at","updated_at"
         ]
 
+    def validate(self, attrs):
+        herd = attrs.get("herd")
+        request = self.context.get("request")
+        
+        if herd and request and herd.rancher != request.user:
+            raise serializers.ValidationError(
+                {"herd": "You can only add animals to your own herds."}
+            )
+        return attrs
+
 class AnimalSummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = Animal
@@ -71,6 +81,16 @@ class TreatmentEventSerializer(serializers.ModelSerializer):
         if value > date.today():
             raise serializers.ValidationError("Treatment date cannot be after today.")
         return value
+
+    def validate(self, attrs):
+        animal = attrs.get("animal")
+        request = self.context.get("request")
+
+        if animal and request and animal.herd.rancher != request.user:
+            raise serializers.ValidationError(
+                {"animal": "You can only add treatment events to animals in your own herds."}
+            )
+        return attrs
 
 class TreatmentEventSummarySerializer(serializers.ModelSerializer):
     class Meta:
@@ -103,6 +123,12 @@ class TreatmentItemSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, attrs):
+        treatment_event = attrs.get("treatment_event")
+        request = self.context.get("request")
+
+        if treatment_event and request and treatment_event.animal.herd.rancher != request.user:
+            raise serializers.ValidationError({"treatment_event": "You can only add treatment items to treatment events for animals in your herd."})
+
         method = attrs.get("method")
         injection_site = attrs.get("injection_site")
 
