@@ -39,7 +39,7 @@ function HerdsPage() {
                     {herds.map((herd) => (
                         <li key={herd.id}>
                             <strong>{herd.name}</strong>
-                            {herd.description ? `- ${herd.description}` : ''}
+                            {herd.description ? ` - ${herd.description}` : ''}
                         </li>
                     ))}
                 </ul>
