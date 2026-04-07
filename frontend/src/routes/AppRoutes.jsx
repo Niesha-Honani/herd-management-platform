@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LoginPage } from '../pages/LoginPage'
 import { DashboardPage } from "../pages/DashboardPage";
-import HerdsPage from "../pages/HerdsPage";
+import { HerdsPage } from "../pages/HerdsPage";
+import { RanchesPage } from "../pages/RanchesPage";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 
 function AppRoutes() {
@@ -21,6 +22,12 @@ function AppRoutes() {
                         <HerdsPage />
                     </ProtectedRoute>
                     }
+                />
+                <Route path="/ranches" element={
+                    <ProtectedRoute>
+                        <RanchesPage />
+                    </ProtectedRoute>
+                }
                 />
             </Routes>
         </BrowserRouter>

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import AuthContext from '../context/AuthContext'
 import { getHerds } from '../api/herds'
 
-function HerdsPage() {
+export const HerdsPage = () => {
 
     const { accessToken } = useContext(AuthContext)
 
@@ -48,4 +48,3 @@ function HerdsPage() {
     )
 }
 
-export default HerdsPage
