@@ -14,7 +14,10 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-const pages = ['Herds']
+const pages = [
+    { label: 'Herds', path: '/herds' },
+    { label: 'Animals', path: '/animals'},
+]
 const settings = ['Logout']
 
 export const DashboardPage = () => {
@@ -90,11 +93,11 @@ export const DashboardPage = () => {
                                 sx={{ display: { xs: 'block', md: 'none' } }}
                                 >
                                     {pages.map((page) => (
-                                        <MenuItem key={page} onClick={() => {
+                                        <MenuItem key={page.label} onClick={() => {
                                             handleCloseNavMenu()
-                                            navigate('/herds')
+                                            navigate(page.path)
                                         }}>
-                                            <Typography sx={{ textAlign: 'center' }}>{page}</Typography>
+                                            <Typography sx={{ textAlign: 'center' }}>{page.label}</Typography>
                                         </MenuItem>
                                     ))}
                                 </Menu>
@@ -121,13 +124,13 @@ export const DashboardPage = () => {
                             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                                 {pages.map((page) => (
                                     <Button
-                                        key={page}
+                                        key={page.label}
                                         onClick={() => {
                                             handleCloseNavMenu()
-                                            navigate('/herds')
+                                            navigate(page.path)
                                         }}
                                         sx={{ my: 2, color: 'white', display: 'block' }}>
-                                            {page}
+                                            {page.label}
                                             </Button>
                                 ))}
                             </Box>
