@@ -43,29 +43,42 @@ export const DashboardPage = () => {
         }
     }, [accessToken])
 
-   return(
-     <Container>
-        <h1>Dashboard</h1>
-    {/* Data Cards */}
-    {loading && <p>Loading....</p>}
-    {error && <p>{error}</p>} 
-        <Box>
-                <Grid>
-                    <Card><Typography>Ranches</Typography>
-                        <CardContent>{ranches.length}
-                        </CardContent>
+    if (loading) return <p>Loading....</p>
+    if (error) return <p>{error}</p>
+
+    return(
+        <Container>
+            <Typography variant="h4">Dashboard</Typography>
+            {/* Data Cards */}
+            <Box>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <Card>
+                            <CardContent>
+                                <Typography variant="overline">Ranches</Typography>
+                                <Typography variant="h2" color='gray'>{ranches.length}</Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Card>
+                            <CardContent >
+                                <Typography variant="overline">Herds</Typography>
+                                <Typography variant="h2" color='gray'>{herds.length}</Typography>
+                            </CardContent>
                     </Card>
-                    <Card>
-                        <Typography>Herds</Typography>
-                        <CardContent >{herds.length}</CardContent>
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <Card>
+                            <CardContent >
+                                <Typography variant="overline">Animals</Typography>
+                                <Typography variant="h2" color='gray'>{animals.length}</Typography>
+                            </CardContent>
                     </Card>
-                     <Card>
-                        <Typography>Animals</Typography>
-                        <CardContent >{animals.length}</CardContent>
-                    </Card>
+                    </Grid>
                 </Grid>
-        </Box>
-     </Container>
+            </Box>
+        </Container>
      
    ) 
 }

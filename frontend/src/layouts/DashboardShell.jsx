@@ -124,7 +124,7 @@ export const DashboardShell = () => {
                 </List>
             </Drawer>
 
-            <Box flexGrow={1} p={3}>
+            <Box component="main" sx={{ flexGrow: 1, p:3 }}>
                <Toolbar />
                 <Outlet /> 
             </Box>
