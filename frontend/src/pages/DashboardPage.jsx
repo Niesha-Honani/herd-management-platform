@@ -1,173 +1,71 @@
-import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import AppBar from '@mui/material/AppBar';
+import {useContext, useEffect, useState} from 'react';
+import AuthContext from '../context/AuthContext';
+import { getAnimals } from '../api/animals'
+import { getHerds } from '../api/herds';
+import { getRanches } from '../api/ranches';
 import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-
-const pages = [
-    { label: 'Herds', path: '/herds' },
-    { label: 'Animals', path: '/animals'},
-]
-const settings = ['Logout']
+import CardContent from '@mui/material/CardContent';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
 
 export const DashboardPage = () => {
-    const [anchorElNav, setAnchorElNav] = React.useState(null)
-    const [anchorElUser, setAnchorElUser] = React.useState(null)
+    const { accessToken } = useContext(AuthContext)
+    /* States */
+    const [ranches, setRanches]= useState([])
+    const [herds, setHerds] = useState([])
+    const [animals, setAnimals] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState('')
 
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    }
+    useEffect(()=>{
+        async function loadDashboardData(){
+            try{
+               setLoading(true)
+               setError('')
+                const animals = await getAnimals(accessToken)
+                setAnimals(animals)
 
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget)
-    }
+                const herds = await getHerds(accessToken)
+                setHerds(herds)
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null)
-    }
+                const ranches = await getRanches(accessToken)
+                setRanches(ranches)
+               }catch(err){
+                setError(err.message)
+            }finally {
+                setLoading(false)
+            }
+        }
+        if (accessToken) {
+            loadDashboardData()
+        }
+    }, [accessToken])
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null)
-    }
-
-    // -- Navigation
-    const navigate = useNavigate()
-
-    return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: {xs: 'none', md: 'flex'}, mr: 1 }} />
-                    <Typography 
-                        variant='h6'
-                        noWrap
-                        component="a"
-                        sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                        >
-                            BONANZA
-                        </Typography>
-
-                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-                            <IconButton
-                                size="large"
-                                aria-label='account of current user'
-                                aria-controls='menu-appbar'
-                                aria-haspopup='true'
-                                onClick={handleOpenNavMenu}
-                                color="inherit"
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorElNav}
-                                anchorOrigin={{
-                                    vertical: 'bottom',
-                                    horizontal: 'left',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left'
-                                }}
-                                open={Boolean(anchorElNav)}
-                                onClose={handleCloseNavMenu}
-                                sx={{ display: { xs: 'block', md: 'none' } }}
-                                >
-                                    {pages.map((page) => (
-                                        <MenuItem key={page.label} onClick={() => {
-                                            handleCloseNavMenu()
-                                            navigate(page.path)
-                                        }}>
-                                            <Typography sx={{ textAlign: 'center' }}>{page.label}</Typography>
-                                        </MenuItem>
-                                    ))}
-                                </Menu>
-                        </Box>
-                        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}/>
-                        <Typography
-                            variant="h5"
-                            noWrap
-                            component="a"
-                            href='#app-bar-with-responsive-menu'
-                            sx={{
-                                mr: 2,
-                                display: { xs: 'flex', md: 'none' },
-                                flexGrow: 1,
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                letterSpacing: '.3rem',
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                            >
-                                BONANZA
-                            </Typography>
-                            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                                {pages.map((page) => (
-                                    <Button
-                                        key={page.label}
-                                        onClick={() => {
-                                            handleCloseNavMenu()
-                                            navigate(page.path)
-                                        }}
-                                        sx={{ my: 2, color: 'white', display: 'block' }}>
-                                            {page.label}
-                                            </Button>
-                                ))}
-                            </Box>
-                            <Box sx={{ flexGrow: 0 }}>
-                                <Tooltip title="Open settings">
-                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                                    </IconButton>
-                                </Tooltip>
-                                <Menu
-                                    sx={{ mt: '45px' }}
-                                    id="menu-appbar"
-                                    anchorEl={anchorElUser}
-                                    anchorOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    keepMounted
-                                    transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'right',
-                                    }}
-                                    open={Boolean(anchorElUser)}
-                                    onClose={handleCloseUserMenu}
-                                >
-                                    {settings.map((setting) => (
-                                        <MenuItem key={setting} onClick={() => {
-                                            handleCloseNavMenu()
-                                            navigate('/herds')
-                                        }}>
-                                            <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                                        </MenuItem>
-                                    ))}
-                                </Menu>
-                            </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
-    )
+   return(
+     <Container>
+        <h1>Dashboard</h1>
+    {/* Data Cards */}
+    {loading && <p>Loading....</p>}
+    {error && <p>{error}</p>} 
+        <Box>
+                <Grid>
+                    <Card><Typography>Ranches</Typography>
+                        <CardContent>{ranches.length}
+                        </CardContent>
+                    </Card>
+                    <Card>
+                        <Typography>Herds</Typography>
+                        <CardContent >{herds.length}</CardContent>
+                    </Card>
+                     <Card>
+                        <Typography>Animals</Typography>
+                        <CardContent >{animals.length}</CardContent>
+                    </Card>
+                </Grid>
+        </Box>
+     </Container>
+     
+   ) 
 }

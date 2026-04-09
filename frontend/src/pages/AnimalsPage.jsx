@@ -1,7 +1,22 @@
+import * as React from 'react'
+//import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import AuthContext from '../context/AuthContext'
 import { getAnimals, createAnimal } from '../api/animals'
 import { getHerds } from '../api/herds'
+
+//MUI
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography'
+import Alert from '@mui/material/Alert'
+import Paper from '@mui/material/Paper'
+import FormControl from '@mui/material/FormControl'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import TextField from '@mui/material/TextField'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 
 export const AnimalPage = () => {
     // Constant variables
@@ -105,117 +120,99 @@ export const AnimalPage = () => {
         }
     }
 
+    const isFormValid=
+        formData.hcp_tag !== '' && formData.owner_tag !== '';
+
     return (
         <section>
             <h1> Animals Page </h1>
             {error && <p>{error}</p>}
-
-            <label htmlFor='animal-filter-herd'>Filter by herd</label>
-            <select 
-                id="animal-filter-herd"
-                value={herdId}
-                onChange={(e) => setHerdId(e.target.value)}
+            <Box
+                component="form"
+                onSubmit={handleSubmit}
+                sx={{ display: 'flex', flexDirection: 'column', gap:2, maxWidth: 500, mt: 2 }}
             >
-                <option value="">All Herds</option>
-                {herds.map((herd) => (
-                    <option key={herd.id} value={herd.id}>
-                        {herd.name}
-                    </option>
-                ))}
-            </select>
+                {/* Herd select */}
+                <FormControl fullWidth>
+                    <InputLabel>Herd</InputLabel>
+                    <Select
+                        name="herd"
+                        value={FormData.herd}
+                        label="Herd"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="">Select a herd</MenuItem>
+                        {herds.map((herd) =>(
+                            <MenuItem key={herd.id} value={herd.id}>{herd.name}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
 
-            <form onSubmit={handleSubmit}>
-                <select name="herd" value={formData.herd} onChange={handleChange}>
-                    <option value="">Select a herd</option>
-                {herds.map((herd) => (
-                    <option key={herd.id} value={herd.id}>
-                        {herd.name}
-                    </option>
-                ))}
-                </select>
-                <select name="sex"
-                    value={formData.sex} onChange={handleChange}>
-                       <option value="">Select sex
-                        </option>
-                    {SEX_OPTIONS.map((option) => (
-                        <option key={option} value={option}>{option}</option>
-                    ))} 
-                    </select>
-                <select
-                    name="animal_class"
-                    value={formData.animal_class}
-                    onChange={handleChange}
+                {/* TextField: HCP Tag, Owner Tag */}
+                <TextField fullWidth label="HCP Tag" name="hcp_tag" value={FormData.hcp_tag} onChange={handleChange} />
+                <TextField fullWidth label="Owner Tag" name="owner_tag" value={FormData.owner_tag} onChange={handleChange} />
+                <TextField fullWidth label="Tag Color" name="tag_color" value={FormData.tag_color} onChange={handleChange} />
+                <TextField fullWidth label="Brand" name="brand" value={FormData.brand} onChange={handleChange} />
+                <TextField fullWidth label="Description" name="description" value={FormData.description} onChange={handleChange} />
+                <TextField fullWidth label="Birth Year" name='birth_year' type='number' value={FormData.birth_year} onChange={handleChange} />
+                
+                {/* Sex selection */} 
+                <FormControl fullWidth>
+                    <InputLabel>Sex</InputLabel>
+                    <Select
+                        name="sex"
+                        value={formData.sex}
+                        label="Sex"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="">Select sex</MenuItem>
+                        {SEX_OPTIONS.map((option) => (
+                            <MenuItem key={option} value={option}>{option}</MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                {/* Animal class select */}
+                <FormControl>
+                    <InputLabel>Animal Class</InputLabel>
+                    <Select
+                        name="animal_class"
+                        value={FormData.animal_class}
+                        label="Animal Class"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="">Select animal class</MenuItem>
+                        {ANIMAL_CLASS_OPTIONS.map((option) => (
+                           <MenuItem key={option} value={option}>{option}</MenuItem> 
+                        ))}
+                    </Select>
+                </FormControl>
+
+                {/* Status select */}
+                <FormControl fullWidth>
+                    <InputLabel>Status</InputLabel>
+                    <Select
+                        name="status"
+                        value={FormData.status}
+                        label="Status"
+                        onChange={handleChange}
+                    >
+                        <MenuItem value="">Select status</MenuItem>
+                        {STATUS_OPTIONS.map((option) => (
+                           <MenuItem key={option} value={option}>{option}</MenuItem> 
+                        ))}
+                    </Select>
+                </FormControl>
+                <TextField fullWidth label="Notes" name='notes' multiline rows={3} value={FormData.notes} onChange={handleChange} />
+                <Button
+                    type="submit"
+                    variant='contained'
+                    disabled={!isFormValid}
                 >
-                    <option
-                        value="">Select animal class
-                    </option>
-                    {ANIMAL_CLASS_OPTIONS.map((option) => (
-                        <option key={option} value={option}>{option}</option>
-                    ))}
-                </select>
-                <select 
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}>
-                    <option 
-                        value="">Select status
-                    </option>
-                    {STATUS_OPTIONS.map((option) => (
-                        <option key={option} value={option}>{option}</option>
-                    ))}
-                </select>
-                <input
-                    type="text"
-                    name="hcp_tag"
-                    placeholder='HCP tag'
-                    value={formData.hcp_tag}
-                    onChange={handleChange}
-                    />
-                <input
-                    type='text'
-                    name='owner_tag'
-                    placeholder='Owner tag'
-                    value={formData.owner_tag}
-                    onChange={handleChange} 
-                />
-                <input
-                    type='text'
-                    name='tag_color'
-                    placeholder='Tag color'
-                    value={formData.tag_color}
-                    onChange={handleChange}
-                />
-                <input
-                    type='text'
-                    name='description'
-                    placeholder='Description'
-                    value={formData.description}
-                    onChange={handleChange}
-                />
-                <input
-                    type='number'
-                    name='birth_year'
-                    placeholder='YYYY'
-                    value={formData.birth_year}
-                    onChange={handleChange}
-                />
-                <input
-                    type='text'
-                    name='brand'
-                    placeholder='Brand'
-                    value={formData.brand}
-                    onChange={handleChange}
-                />
-                <input
-                    type='text'
-                    name='notes'
-                    placeholder='Notes'
-                    value={formData.notes}
-                    onChange={handleChange}
-                />
-                <button type="submit">Create Animal</button>
-            </form>
-
+                    Create Animal
+                </Button>
+            </Box>
+                
             {loading ? (
                 <p>Loading animals...</p>
             ) : animals.length === 0 ? (
