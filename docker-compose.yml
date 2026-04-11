@@ -18,7 +18,8 @@ services:
     build: .
     container_name: bonanza_web
     restart: unless-stopped
-    command: python manage.py runserver 0.0.0.0:8000
+    working_dir: /app/backend
+    command: gunicorn --bind 0.0.0.0:8000 --workers 3 config.wsgi:application
     volumes:
       - .:/app
     ports:
