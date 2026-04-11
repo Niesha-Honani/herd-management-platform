@@ -2,7 +2,7 @@ import * as React from 'react'
 //import { useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import AuthContext from '../context/AuthContext'
-import { getAnimals, createAnimal } from '../api/animals'
+import { getAnimals, createAnimal, editAnimal, deleteAnimal } from '../api/animals'
 import { getHerds } from '../api/herds'
 
 //MUI
@@ -27,6 +27,7 @@ import CardContent from '@mui/material/CardContent'
 import Toolbar from '@mui/material/Toolbar'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import DeletIcon from '@mui/icons-material/Delete';
 import PageContainer from '../components/PageContainer'
 import FormGroup from '@mui/material/FormGroup'
 import Grid from '@mui/material/Grid'
@@ -76,7 +77,6 @@ export const AnimalPage = () => {
                 const data = await getAnimals(accessToken, herdId)
                 setAnimals(data)
             }catch (err){
-                {error && <Alert severity="error">{error}</Alert>}
                 setError(err.message)
             }finally {
                 setLoading(false)
@@ -116,11 +116,21 @@ export const AnimalPage = () => {
         setError('')
 
         try{
-            const newAnimal = await createAnimal(formData,accessToken)
-            if (!herdId || String(newAnimal.herd) === String(herdId)) {
-                setAnimals((prev) => [...prev, newAnimal])
+            let savedAnimal
+
+            if (viewMode === 'edit' && selectedAnimal){
+                savedAnimal = await editAnimal(selectedAnimal.id, formData, accessToken)
+
+                setAnimals((prev) =>
+                    prev.map((animal) => 
+                        animal.id === savedAnimal.id ? savedAnimal : animal)
+                    )
+            } else {
+                savedAnimal = await createAnimal(formData,accessToken)
+                if (!herdId || String(savedAnimal.herd) === String(herdId)) {
+                setAnimals((prev) => [...prev, savedAnimal])
+                }
             }
-            
             setformData({
                 herd: '',
                 hcp_tag: '',
@@ -139,6 +149,21 @@ export const AnimalPage = () => {
         } catch(err){
             setError(err.message)
         }
+    }
+
+    async function handleDelete(animalId){
+        setError('')
+        try{
+            await deleteAnimal(animalId, accessToken)
+            setAnimals((prev) => prev.filter((animal) => animal.id !== animalId))
+
+            if (selectedAnimal && selectedAnimal.id === animalId){
+                setSelectedAnimal(null)
+                setViewMode('list')
+            }
+        } catch(err){
+            setError(err.message)
+        } 
     }
     
     function resetForm(){
@@ -171,9 +196,10 @@ export const AnimalPage = () => {
     const isFormValid=
         formData.hcp_tag !== '' && formData.owner_tag !== '';
 
-    if (viewMode === 'create'){
+    if (viewMode === 'create' || viewMode === 'edit'){
         return(
-            <PageContainer title="Animal" breadcrumbs={[{title: 'New'}]}>
+            <PageContainer title={viewMode === 'edit' ? 'Edit Animal' : 'Animal'} breadcrumbs={[{title: viewMode === 'edit' ? 'Edit' : 'New'}]}>
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
             
             <Box
                 component="form"
@@ -364,7 +390,7 @@ export const AnimalPage = () => {
                                     setSelectedAnimal(null)
                                     setViewMode('list')}}>Back</Button>
                                  <Button type="button"  variant='contained' onClick={resetForm}>Reset</Button>
-                                 <Button type="submit" variant={isFormValid ? 'contained' : 'outlined'} disabled={!isFormValid}>Create</Button>
+                                 <Button type="submit" variant={isFormValid ? 'contained' : 'outlined'} disabled={!isFormValid}>{viewMode === 'edit' ? 'Save Changes' : 'Create'}</Button>
                             </Box>
                         </Grid>
                     </FormGroup>
@@ -461,10 +487,31 @@ export const AnimalPage = () => {
                                             setSelectedAnimal(animal)
                                             setViewMode('details')
                                           }}><VisibilityIcon /></IconButton>
+
                                           <IconButton onClick={() => {
                                             setSelectedAnimal(animal)
-                                            setViewMode('create')  
-                                          }}><ModeEditIcon /></IconButton> 
+                                            setformData({
+                                                herd: animal.herd || '',
+                                                hcp_tag: animal.hcp_tag || '',
+                                                owner_tag: animal.owner_tag || '',
+                                                tag_color: animal.tag_color || '',
+                                                description: animal.description || '',
+                                                sex: animal.sex || '',
+                                                animal_class: animal.animal_class || '',
+                                                status: animal.status || '',
+                                                birth_year: animal.birth_year || '',
+                                                brand: animal.brand || '',
+                                                notes: animal.notes || '',
+                                            })
+                                            setViewMode('edit')  
+                                          }}><ModeEditIcon /></IconButton>
+
+                                          <IconButton onClick={() => {
+                                            const confirmed = window.confirm(`Delete animal ${animal.hcp_tag || animal.id}?`)
+                                            if (confirmed){
+                                                handleDelete(animal.id)
+                                            }
+                                          }}><DeletIcon /></IconButton> 
                                         </TableCell>
                                        </TableRow> 
                                     ))
