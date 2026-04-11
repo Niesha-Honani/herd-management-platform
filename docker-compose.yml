@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: bonanza_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bonanza
+      POSTGRES_USER: bonanza_user
+      POSTGRES_PASSWORD: bonanza_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    container_name: bonanza_web
+    restart: unless-stopped
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_NAME: bonanza
+      DB_USER: bonanza_user
+      DB_PASSWORD: bonanza_pass
+      DB_HOST: db
+      DB_PORT: 5432
+
+volumes:
+  postgres_data:

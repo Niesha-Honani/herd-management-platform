@@ -17,11 +17,17 @@ import AppsIcon from '@mui/icons-material/Apps';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton'
+import LoginIcon from '@mui/icons-material/Login';
 
 const NAVIGATION = [
     {
         kind: 'header',
         title: 'Main'
+    },
+    {
+        segment: 'login',
+        title: 'Login',
+        icon: <LoginIcon />,
     },
     {
         segment: 'dashboard',
