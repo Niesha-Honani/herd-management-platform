@@ -9,6 +9,7 @@ import Container from '@mui/material/Container';
 import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
+import Toolbar from '@mui/material/Toolbar';
 
 export const DashboardPage = () => {
     const { accessToken } = useContext(AuthContext)
@@ -51,8 +52,8 @@ export const DashboardPage = () => {
             <Typography variant="h4">Dashboard</Typography>
             {/* Data Cards */}
             <Box>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} md={4}>
+                <Grid container spacing={12}>
+                    <Grid size={{xs:12, md:4}}>
                         <Card>
                             <CardContent>
                                 <Typography variant="overline">Ranches</Typography>
@@ -60,7 +61,7 @@ export const DashboardPage = () => {
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{xs:12, md:4}}>
                         <Card>
                             <CardContent >
                                 <Typography variant="overline">Herds</Typography>
@@ -68,7 +69,7 @@ export const DashboardPage = () => {
                             </CardContent>
                     </Card>
                     </Grid>
-                    <Grid item xs={12} md={4}>
+                    <Grid size={{xs:12, md:4}}>
                         <Card>
                             <CardContent >
                                 <Typography variant="overline">Animals</Typography>
@@ -77,8 +78,16 @@ export const DashboardPage = () => {
                     </Card>
                     </Grid>
                 </Grid>
+                <Box></Box>
+                <Box size={{ mt:3 }}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant='h5'>Recent Treatment Events</Typography>
+                            <Typography>Coming soon</Typography>
+                        </CardContent>
+                    </Card>
+                </Box>
             </Box>
         </Container>
-     
    ) 
 }
