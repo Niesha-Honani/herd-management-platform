@@ -8,8 +8,6 @@ import { getHerds } from '../api/herds'
 //MUI
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography'
-import PropTypes from 'prop-types'
-import Collapse from '@mui/material/Collapse'
 import IconButton from '@mui/material/IconButton'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody';
@@ -17,7 +15,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper'
 import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import Select from '@mui/material/Select'
@@ -27,16 +24,13 @@ import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Alert from '@mui/material/Alert'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Toolbar from '@mui/material/Toolbar'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import PageContainer from '../components/PageContainer'
 import FormGroup from '@mui/material/FormGroup'
 import Grid from '@mui/material/Grid'
-import FormLabel from '@mui/material/FormLabel'
-import ListSubheader from '@mui/material/ListSubheader'
+import Alert from '@mui/material/Alert'
 
 export const AnimalPage = () => {
     //viewMode create and list 
@@ -82,6 +76,7 @@ export const AnimalPage = () => {
                 const data = await getAnimals(accessToken, herdId)
                 setAnimals(data)
             }catch (err){
+                {error && <Alert severity="error">{error}</Alert>}
                 setError(err.message)
             }finally {
                 setLoading(false)
@@ -139,9 +134,29 @@ export const AnimalPage = () => {
                 brand: '',
                 notes: '',
             })
+            setSelectedAnimal(null)
+            setViewMode('list') 
         } catch(err){
             setError(err.message)
         }
+    }
+    
+    function resetForm(){
+        setError('')
+        setformData({
+                herd: '',
+                hcp_tag: '',
+                owner_tag: '',
+                tag_color: '',
+                description: '',
+                sex: '',
+                animal_class: '',
+                status: '',
+                birth_year: '',
+                brand: '',
+                notes: '',
+            })
+            setSelectedAnimal(null)
     }
 
     const inputStyle = {backgroundColor: 'black', borderRadius: 1 ,
@@ -345,9 +360,11 @@ export const AnimalPage = () => {
                         </Grid>
                         <Grid>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                                <Button variant="contained" onClick={() => setViewMode('list')}>Back</Button>
-                                 <Button type="submit" variant='contained' disabled={!isFormValid}>Reset</Button>
-                                 <Button type="submit" variant='contained' disabled={!isFormValid}>Create</Button>
+                                <Button type="button" variant="contained" onClick={() => {
+                                    setSelectedAnimal(null)
+                                    setViewMode('list')}}>Back</Button>
+                                 <Button type="button"  variant='contained' onClick={resetForm}>Reset</Button>
+                                 <Button type="submit" variant={isFormValid ? 'contained' : 'outlined'} disabled={!isFormValid}>Create</Button>
                             </Box>
                         </Grid>
                     </FormGroup>
@@ -381,6 +398,7 @@ export const AnimalPage = () => {
             </Container>
         )
     }
+     if (loading) return <p>Loading....</p>
 
     return (
         <Container>
@@ -439,7 +457,7 @@ export const AnimalPage = () => {
                                         <TableCell>{animal.status || '-'}</TableCell>
                                         <TableCell>{animal.birth_year || '-'}</TableCell>
                                         <TableCell>
-                                          <IconButton spacing={3} onClick={() => {
+                                          <IconButton onClick={() => {
                                             setSelectedAnimal(animal)
                                             setViewMode('details')
                                           }}><VisibilityIcon /></IconButton>
