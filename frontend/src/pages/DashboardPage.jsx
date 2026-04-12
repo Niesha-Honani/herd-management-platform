@@ -18,6 +18,7 @@ export const DashboardPage = () => {
     const [ranches, setRanches]= useState([])
     const [herds, setHerds] = useState([])
     const [animals, setAnimals] = useState([])
+    const [treatmentEvents, setTreatmentEvents] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
     const [weather, setWeather] = useState(null)
@@ -31,6 +32,9 @@ export const DashboardPage = () => {
             try{
                setLoading(true)
                setError('')
+
+               const accessToken = localStorage.getItem("accessToken")
+
                 const animals = await getAnimals(accessToken)
                 setAnimals(animals)
 
@@ -55,6 +59,34 @@ export const DashboardPage = () => {
             loadDashboardData()
         }
     }, [RANCH_COORDS.latitude, RANCH_COORDS.longitude, accessToken])
+
+    useEffect(() => {
+        async function loadTreatmentEvents() {
+            try {
+                const accessToken = localStorage.getItem("accessToken")
+
+                const response = await fetch("http://127.0.0.1:8000/api/treatment-events/", {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
+                })
+
+                const data = await response.json()
+
+                if (!response.ok) {
+                    setError("Failed to load treatment events.")
+                    return
+                }
+
+                setTreatmentEvents(data)
+            } catch (err) {
+                setError(err.message || "Something went wrong loading treatment events.")
+            }
+        }
+
+        loadTreatmentEvents()
+    }, [])
 
     if (loading) return <p>Loading....</p>
     if (error) return <p>{error}</p>
@@ -103,11 +135,19 @@ export const DashboardPage = () => {
                     </Grid>
                 </Grid>
                 <Box></Box>
-                <Box size={{ mt:3 }}>
+                <Box sx={{ mt:3 }}>
                     <Card>
                         <CardContent>
-                            <Typography variant='h5'>Recent Treatment Events</Typography>
-                            <Typography>Coming soon</Typography>
+                            <Typography variant="h5">Recent Treatment Events</Typography>
+                            {treatmentEvents.length === 0 ? (
+                                <Typography>No treatment events yet</Typography>
+                            ) : (
+                                treatmentEvents.slice(0, 5).map((event) => (
+                                    <Typography key={event.id}>
+                                        #{event.id} — {event.treated_on}
+                                    </Typography>
+                                ))
+                            )} 
                         </CardContent>
                     </Card>
                 </Box>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Outlet, Link } from "react-router-dom"
+import { Outlet, Link, useNavigate } from "react-router-dom"
 import Box from "@mui/material/Box"
 import AppBar from "@mui/material/AppBar"
 import Drawer from "@mui/material/Drawer"
@@ -18,6 +18,9 @@ import LandscapeIcon from '@mui/icons-material/Landscape';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton'
 import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+
 
 const NAVIGATION = [
     {
@@ -63,6 +66,14 @@ const DRAWER_WIDTH = 240
 
 export const DashboardShell = () => {
     const [open, setOpen] = React.useState(false)
+
+    const navigate = useNavigate()
+    
+    function handleLogout(){
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
+        navigate("/login")
+    }
     
     const toggleDrawer = () => {
         setOpen((prev) => !prev)
@@ -79,7 +90,17 @@ export const DashboardShell = () => {
                     >
                         <MenuIcon />
                     </IconButton>
+                    
                     <Typography variant='h6'>Bonanza</Typography>
+                    <Box sx={{ flexGrow: 1}} />
+                    
+                    <IconButton
+                        color="inherit"
+                        onClick={handleLogout}
+                        sx={{ mr:2 }}
+                    >
+                        <LogoutIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
             

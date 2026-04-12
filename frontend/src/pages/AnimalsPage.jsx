@@ -72,6 +72,7 @@ export const AnimalPage = () => {
     useEffect(() => {
         async function loadAnimals() {
             try {
+                const accessToken = localStorage.getItem("accessToken")
                 setLoading(true)
                 setError('')
                 const data = await getAnimals(accessToken, herdId)
@@ -112,6 +113,7 @@ export const AnimalPage = () => {
     }
 
     async function handleSubmit(event){
+        const accessToken = localStorage.getItem("accessToken")
         event.preventDefault()
         setError('')
 
@@ -126,9 +128,15 @@ export const AnimalPage = () => {
                         animal.id === savedAnimal.id ? savedAnimal : animal)
                     )
             } else {
-                savedAnimal = await createAnimal(formData,accessToken)
+                const payload = {
+                    ...formData,
+                    herd: 1,   // hard-coded herd id for MVP/demo
+                }
+
+                savedAnimal = await createAnimal(payload, accessToken)
+
                 if (!herdId || String(savedAnimal.herd) === String(herdId)) {
-                setAnimals((prev) => [...prev, savedAnimal])
+                    setAnimals((prev) => [...prev, savedAnimal])
                 }
             }
             setformData({
